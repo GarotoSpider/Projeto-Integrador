@@ -1,48 +1,61 @@
-<!DOCTYPE html>
-<HTML>
-    <HEAD>
-        <TITLE>Comentários</TITLE>
-    </HEAD>
-    <BODY>
-        <h2>Comentários Enviados pelos Usuários</h3>
-        <?php
-        $link = mysql_connect("localhost", 'root', '');
-        $banco = mysql_select_db("bdcomentarios");
-        ?>
+<?php
+    $servidor = 'localhost';
+    $usuario = 'root';
+    $senha = '';
+    $db = 'loguin'; 
+    $connect = mysqli_connect($servidor,$usuario,$senha,$db)
+            or die('Não conectou com o servidor');
+    $nickname = $_POST['nickname'];
+    $nome = $_POST['nome'];
+    $senha = $_POST['senha'];
+    $query_select = "SELECT nome From Loguin WHERE nome = '$nome'";  
+    $select = mysqli_query($connect,$query_select)
+            or die('Não foi possivel conectar o banco de dados');
+    $array = mysqli_fetch_array($select);
+    $logarray = $array['nickname'];
+     if($nickname==""||$nickname==NULL){
+         echo "Campo Nickname vazio!!!";
+     }else if($nome==""||$nome==NULL){
+         echo "Campo Nome vazio !!!";
+     }else if($nickname ==""||$nickname==NULL){
+         echo "Campo Nome vazio !!!";
+     }else{
+      if($logarray == $nickname){
+          echo "Nickname já em uso!!";
+          die();
+      }else{
+           $query = "INSERT INTO Loguin (nickname,nome,senha) VALUES ('$nickname','$nome','$senha')";
+                    $insert = mysqli_query($connect,$query);
+           if($insert){
+               echo "usuario cadastrado com sucesso!";
+                    }else{ 
+               echo "Erro ao cadastrar o usuario!!";
+               }
+      }
+     
+     
+      
+      }
+     ?> 
 
-        <form name="form" method="post" action="#">
-            Nome:
-            <input type=text name=nome>
-            <br><br>E-Mail:
-            <input type=text name=email>
-            <br><br>Mensagem:<br>
-            <textarea name=comentario></textarea>
-            <br><br>
-            <input type=submit value=Enviar>
-            <input type=reset value=Limpar>
+<!Doctype>
+<html>
+    <head>
+        <title>Registro de usuario</title>
+        <meta charset = "utf-8">
+        
+    </head>
+    <body>
+        <h1>Cadastro de Usuario</h1>
+        <form action="" method="POST">
+            <label>Nickname:</label><br>
+            <input id="nickname" name="nickname" type="text" required></input><br>
+            <label>Nome:</label><br>
+            <input id="nome" name="nome" type="text" required></input><br>
+            <label>Senha:</label><br>
+            <input id="senha" name="senha" type="password" required></input><br><br>
+            
+            <button type="submit" value="Cadastrar" nome="cadastrar">Cadastre-se</button><br>
         </form>
-
-        <?php
-        $nome = $_POST['nome'];
-        $email = $_POST['email'];
-        $data = date("Y/m/d");
-        $comentario = $_POST['comentario'];
-        if (strlen($_POST['nome'])) {
-            $insert = mysql_query("INSERT INTO tbcomentarios(nome,email,data,comentario) 
-    values('$nome','$email','$data','$comentario')");
-        }
-        $sql = "SELECT * FROM tbcomentarios ORDER BY id desc";
-        $executar = mysql_query($sql);
-        while ($exibir = mysql_fetch_array($executar)) {
-            echo $exibir['data'];
-            echo "</br>";
-            echo $exibir['nome'];
-            echo "</br>";
-            echo $exibir['email'];
-            echo "</br>";
-            echo $exibir['comentario'];
-            echo "</br><hr>";
-        }
-        ?>
-        </BODY>
-        </HTML>
+    </body>
+</html>
